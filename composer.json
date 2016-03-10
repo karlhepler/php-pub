@@ -16,5 +16,14 @@
     "config": {
         "bin-dir": "bin"
     },
-    "autoload": {"psr-0": {"": "src"}}
+    "autoload-dev": {
+		"psr-0": {
+			"": "src"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"OldTimeGuitarGuy\\": "src/"
+		}
+	}
 }
