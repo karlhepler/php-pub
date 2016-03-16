@@ -50,6 +50,11 @@ class Pub
      */
     public function path($path = '')
     {
+		// If there is an at sign, then don't add base
+		if ( strpos($path, '/@') === 0 ) {
+			return ltrim($path, '/@');
+		}
+
 		return Pather::finalize(
 			$this->base . Pather::normalize($path)
 		);

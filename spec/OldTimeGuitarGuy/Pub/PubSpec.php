@@ -60,6 +60,13 @@ class PubSpec extends ObjectBehavior
 		$this->shouldThrow(PathException::class)->duringPoop('testing');
 	}
 
+	function it_allows_base_overrides_when_prepended_with_at()
+	{
+		$this->addPath('at', '@http://testing.com');
+
+		$this->at('foo/bar')->shouldReturn('http://testing.com/foo/bar');
+	}
+
 	function it_can_create_global_pub_functions()
 	{
 		Globaler::removeInstance(Pub::class);
