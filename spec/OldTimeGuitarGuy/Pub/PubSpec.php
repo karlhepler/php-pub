@@ -8,6 +8,7 @@ use OldTimeGuitarGuy\Pub\Pub;
 use OldTimeGuitarGuy\Pub\Helpers\Pather;
 use OldTimeGuitarGuy\Pub\Helpers\Globaler;
 use OldTimeGuitarGuy\Pub\Exceptions\PathException;
+use OldTimeGuitarGuy\Pub\Exceptions\PubReservedVariableException;
 
 class PubSpec extends ObjectBehavior
 {
@@ -65,6 +66,29 @@ class PubSpec extends ObjectBehavior
 		$this->addPath('at', '@http://testing.com');
 
 		$this->at('foo/bar')->shouldReturn('http://testing.com/foo/bar');
+	}
+
+	function it_parses_variables_in_the_base_path()
+	{
+		// Add a new variable
+		$this->addVariable('version', 42);
+		
+		// Expect exception thrown if we try to overwrite path
+		$this->shouldThrow(PubReservedVariableException::class)
+			->duringAddVariable('path', 'foo.jpg');
+
+		// Create some paths using variables
+		$this->addPath('var1', 'foo/bar/{{path}}.gz?{{timestamp}}');
+		$this->addPath('var2', 'foo/bar/{{path}}-{{timestamp}}.js?{{version}}');
+		$this->addPath('var3', 'foo/{{timestamp}}/bar/{{timestamp}}/{{version}}');
+		$this->addPath('var4', '@http://google.com/{{version}}{{version}}{{path}}');
+
+		// Test out those paths
+		$time = time();
+		$this->var1('test.js')->shouldReturn("/public/foo/bar/test.js.gz?$time");
+		$this->var2('test.js')->shouldReturn("/public/foo/bar/test.js-$time.js?42");
+		$this->var3('test.js')->shouldReturn("/public/foo/$time/bar/$time/42/test.js");
+		$this->var4('test.js')->shouldReturn("http://google.com/4242test.js");
 	}
 
 	function it_can_create_global_pub_functions()
