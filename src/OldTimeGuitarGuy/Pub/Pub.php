@@ -58,9 +58,8 @@ class Pub
 	{
 		$this->addPath($paths);
 		$this->base = Pather::finalize($base);
-		$this->addVariable($variables);
-
 		$this->defineReservedVariables();
+		$this->addVariable($variables);
 	}
 
     /**
